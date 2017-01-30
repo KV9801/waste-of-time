@@ -42,6 +42,7 @@ void donor()
    ifstream infile;
    unsigned int curline=0;
    string line;
+   //error code
    char* search;
     cout<<"Enter the username:";
     cin>>search;
@@ -59,7 +60,7 @@ void donor()
         infile.close();
     }
 
-    cout << "invalid Username";
+   else cout << "invalid Username";
 }
 
 void Newlogin()
