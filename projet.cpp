@@ -1,6 +1,7 @@
 #include<iostream>
 #include<fstream>
 #include<string>
+#include<cstring>
 using namespace std;
 void donor();
 //void NGO();
@@ -39,11 +40,11 @@ break;
 
 void donor()
 {
+    int flag1;
    ifstream infile;
    unsigned int curline=0;
    string line;
-   //error code
-   char* search;
+   string search;
     cout<<"Enter the username:";
     cin>>search;
     infile.open("dname.dat");
@@ -54,13 +55,48 @@ void donor()
             curline++;
             if(line.find(search,0)!= string::npos)
         {
-          cout<<"found"<<search<<"line:"<<curline<<endl;
+          cout<<"found "<<search<<"line: "<<curline<<endl;
+          string pass1;
+          cout<<"Enter password:";
+          cin>>pass1;
+          string line1;
+          unsigned int curline1=0;
+          ifstream infile1;
+          infile1.open("dpass.dat");
+          if(infile1.is_open())
+          {
+             while(getline(infile1,line1))
+             {
+                 curline1++;
+                 if(curline1==curline)
+                 {
+                     if(line1.compare(pass1) == 0)
+                     {
+                         cout<<"Welcome to our World;";
+                         flag1=1;
+                         goto end1;
+                     }
+
+                     else
+                        {
+                        cout<<"Wrong login";
+                     flag1=1;
+                    goto end1;
+                     }
+
+                 }
+             }
+          }
+
         }
+else flag1=0;
         }
         infile.close();
     }
+    end1:
+if (flag1==0)
+    cout<<"Wrong username";
 
-   else cout << "invalid Username";
 }
 
 void Newlogin()
@@ -74,23 +110,44 @@ switch(b)
 {
 case 1:
 {
-    char name[100],pass[100];
+    char name[100],name1[100],pass[100];
     ofstream outfile,outfile1;
-
+    back:
     outfile.open("dname.dat", ios::ate|ios::app);
     cout<<"\nName:";
     cin.getline(name,100,'\n');
-    outfile<<name<<endl;
-    outfile.close();
+    ifstream infile1;
+    unsigned int curline1=0;
+    string line1;
+    infile1.open("dname.dat");
+    if (infile1.is_open())
+    {
 
-    outfile1.open("dpass.dat", ios ::ate|ios::app);
-    cout<<"\nPassword:";
-    cin.getline(pass,100,'\n');
-    outfile1<<pass<<endl;
-    outfile1.close();
+        while(getline(infile1,line1))
+        {
+            curline1++;
+            if(line1.find(name,0)!= string::npos)
+        {
+          cout<<"Username already exists."<<endl;
+          infile1.close();
+          goto back;
+        }
 
-};
-break;
+    }
+    }
+
+        outfile<<name<<endl;
+        outfile.close();
+
+        outfile1.open("dpass.dat", ios ::ate|ios::app);
+        cout<<"\nPassword:";
+        cin.getline(pass,100,'\n');
+        outfile1<<pass<<endl;
+        outfile1.close();
+        break;
+    }
+
+
 case 2:
 {
     char name[100],pass[100];
@@ -124,6 +181,3 @@ login m;
 m.logi();
 return 0;
 }
-
-
-
