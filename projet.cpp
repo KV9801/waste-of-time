@@ -1,68 +1,91 @@
 #include<iostream>
-#include<fstream>
-#include<string>
 #include<cstring>
+#include<fstream>
 using namespace std;
-void donor();
-//void NGO();
-void Newlogin();
-
-class login
+class functionality
 {
+protected:
+         char name[100],pass[100],name1[100],pass1[100];
+         int c;
+       string encryption(string);
 public:
-void logi ();
+    void newlogin(string,string);
+    void login(string,string);
+    int check(string);
 
 };
+void functionality::newlogin(string filename,string filepass)
+{
+     ofstream outfile,outfile1;
+    outfile.open(filename.data(), ios::ate|ios::app);
+    back:
+    cout<<"\nName:";
+    cin.getline(name,100,'\n');
+    check(name);
+    if(c==0) goto back;
+    ifstream infile1;
+    unsigned int curline1=0;
+    string line1;
+    infile1.open(filename.data());
+    if (infile1.is_open())
+    {
 
-void login::logi()
-{
-int choice;
-return1:
-cout<<"Login as: \n1.Donor\n2.NGO\n3.New login\n";
-cin>>choice;
-switch(choice)
-{
-case 1:
-donor();
-break;
-case 2:
-//NGO();
-break;
-case 3:
-Newlogin();
-break;
-default:
-cout<<"Error\n";
-goto return1;
-break;
+        while(getline(infile1,line1))
+        {
+            curline1++;
+            if(line1.find(name,0)!= string::npos)
+        {
+             if(line1.compare(name) == 0)
+           {
+          cout<<"Username already exists."<<endl;
+          infile1.close();
+          goto back;
+            }
+        }
 }
 }
 
-void donor()
+        outfile<<name<<endl;
+        outfile.close();
+
+        outfile1.open(filepass.data(), ios ::ate|ios::app);
+        cout<<"\nPassword:";
+        cin.getline(pass,100,'\n');
+        outfile1<<encryption(pass)<<endl;
+        outfile1.close();
+    }
+
+void functionality::login(string filename,string filepass)
 {
-    int flag1;
-   ifstream infile;
+        int flag1;
+   ifstream infile,infile1;
    unsigned int curline=0;
    string line;
-   string search;
+   char search1[100];
+   back1:
     cout<<"Enter the username:";
-    cin>>search;
-    infile.open("dname.dat");
+     cin.getline(search1,100,'\n');
+     check(search1);
+     if (c==0) goto back1;
+    infile.open(filename.data());
     if (infile.is_open())
     {
         while(getline(infile,line))
         {
             curline++;
-            if(line.find(search,0)!= string::npos)
+            if(line.find(search1,0)!= string::npos)
         {
-          cout<<"found "<<search<<"line: "<<curline<<endl;
-          string pass1;
+             if(line.compare(search1) == 0)
+           {
+          cout<<"found "<<search1<<"line: "<<curline<<endl;
+          char pass1[100];
           cout<<"Enter password:";
-          cin>>pass1;
+         cin.getline(pass1,100,'\n');
+         encryption(pass1);
           string line1;
           unsigned int curline1=0;
           ifstream infile1;
-          infile1.open("dpass.dat");
+          infile1.open(filepass.data());
           if(infile1.is_open())
           {
              while(getline(infile1,line1))
@@ -70,7 +93,7 @@ void donor()
                  curline1++;
                  if(curline1==curline)
                  {
-                     if(line1.compare(pass1) == 0)
+                     if(line1.compare(encryption(pass1)) == 0)
                      {
                          cout<<"Welcome to our World;";
                          flag1=1;
@@ -87,7 +110,7 @@ void donor()
                  }
              }
           }
-
+           }
         }
 else flag1=0;
         }
@@ -96,88 +119,114 @@ else flag1=0;
     end1:
 if (flag1==0)
     cout<<"Wrong username";
-
 }
-
-void Newlogin()
+int functionality::check(string check1)
 {
-int b;
-return2:
-cout<<"Register as 1.Donor or 2.NGO\n";
-cin>>b;
+    if (check1.find(' ') != std::string::npos)
+{
+    cout<<"Enter data without space.\n";
+    return c=0;
+}
+else return c=1;
+}
+string functionality::encryption(string encrypt)
+{
+    char code[3] = {'B', 'K', 'S'};
+    string cypher = encrypt;
+
+    for (int i = 0; i < encrypt.size(); i++)
+        cypher[i] = encrypt[i] ^ code[i % (sizeof(code) / sizeof(char))];
+
+    return cypher;
+}
+class donor:public functionality
+{
+protected:
+    string filename,filepass;
+    public:
+    string sendname();
+    string sendpass();
+
+};
+string donor::sendname()
+{
+    string filename("dname.dat");
+    return(filename);
+}
+string donor::sendpass()
+{
+    string filepass("dpass.dat");
+    return(filepass);
+}
+class ngo:public functionality
+{
+protected:
+    string filename1,filepass1;
+    public:
+    string sendname1();
+    string sendpass1();
+
+};
+string ngo::sendname1()
+{
+    string filename1("nname.dat");
+    return(filename1);
+}
+string ngo::sendpass1()
+{
+    string filepass1("npass.dat");
+    return(filepass1);
+}
+int main()
+{
+    int choice,n,m;
+    donor d;
+    ngo ng;
+    return1:
+cout<<"Login/Register as: \n1.Donor\n2.NGO\n";
+cin>>choice;
 cin.ignore();
-switch(b)
+switch(choice)
 {
 case 1:
 {
-    char name[100],name1[100],pass[100];
-    ofstream outfile,outfile1;
-    back:
-    outfile.open("dname.dat", ios::ate|ios::app);
-    cout<<"\nName:";
-    cin.getline(name,100,'\n');
-    ifstream infile1;
-    unsigned int curline1=0;
-    string line1;
-    infile1.open("dname.dat");
-    if (infile1.is_open())
+    cout<<"\n1.Login\n2.Register-\n";
+    cin>>n;
+    cin.ignore();
+    if(n==1)
     {
+       d.login(d.sendname(),d.sendpass());
 
-        while(getline(infile1,line1))
+    }
+        else if(n==2)
         {
-            curline1++;
-            if(line1.find(name,0)!= string::npos)
-        {
-          cout<<"Username already exists."<<endl;
-          infile1.close();
-          goto back;
+          d.newlogin(d.sendname(),d.sendpass());
         }
-
-    }
-    }
-
-        outfile<<name<<endl;
-        outfile.close();
-
-        outfile1.open("dpass.dat", ios ::ate|ios::app);
-        cout<<"\nPassword:";
-        cin.getline(pass,100,'\n');
-        outfile1<<pass<<endl;
-        outfile1.close();
+        else cout<<"Error";
         break;
     }
-
-
+break;
 case 2:
 {
-    char name[100],pass[100];
-    ofstream outfile,outfile1;
+    cout<<"\n1.Login\n2.Register-\n";
+    cin>>n;
+    cin.ignore();
+    if(n==1)
+    {
+       ng.login(ng.sendname1(),ng.sendpass1());
 
-    outfile.open("nname.dat", ios::ate|ios::app);
-    cout<<"\nName:";
-    cin.getline(name,100,'\n');
-    outfile<<name<<endl;
-    outfile.close();
-
-    outfile1.open("npass.dat", ios ::ate|ios::app);
-    cout<<"\nPassword:";
-    cin.getline(pass,100,'\n');
-    outfile1<<pass<<endl;
-    outfile1.close();
-
-};
+    }
+        else if(n==2)
+        {
+          ng.newlogin(ng.sendname1(),ng.sendpass1());
+        }
+        else cout<<"Error";
+        break;
+    }
 break;
 default:
-cout<<"Error";
-goto return2;
+cout<<"Error\n";
+goto return1;
 break;
 }
-}
-
-int main ()
-{
-cout<<"Hello\n";
-login m;
-m.logi();
-return 0;
 }
