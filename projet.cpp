@@ -6,11 +6,12 @@ class functionality
 {
 protected:
          char name[100],pass[100],name1[100],pass1[100];
+         int c;
        //  void encryption();
 public:
     void newlogin(string,string);
     void login(string,string);
-    //void check();
+    int check(string);
 
 };
 void functionality::newlogin(string filename,string filepass)
@@ -20,6 +21,8 @@ void functionality::newlogin(string filename,string filepass)
     back:
     cout<<"\nName:";
     cin.getline(name,100,'\n');
+    check(name);
+    if(c==0) goto back;
     ifstream infile1;
     unsigned int curline1=0;
     string line1;
@@ -59,8 +62,11 @@ void functionality::login(string filename,string filepass)
    unsigned int curline=0;
    string line;
    char search1[100];
+   back1:
     cout<<"Enter the username:";
      cin.getline(search1,100,'\n');
+     check(search1);
+     if (c==0) goto back1;
     infile.open(filename.data());
     if (infile.is_open())
     {
@@ -112,6 +118,15 @@ else flag1=0;
     end1:
 if (flag1==0)
     cout<<"Wrong username";
+}
+int functionality::check(string check1)
+{
+    if (check1.find(' ') != std::string::npos)
+{
+    cout<<"Enter data without space.\n";
+    return c=0;
+}
+else return c=1;
 }
 class donor:public functionality
 {
